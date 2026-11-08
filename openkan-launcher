@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# OpenKan — inicializador
+#   • Se o OpenKan estiver instalado (~/.local/share/openkan), usa o venv dele;
+#   • Senão, tenta executar direto da pasta de origem (ao lado deste script).
+set -euo pipefail
+
+DESTINO="${HOME}/.local/share/openkan"
+APP="${DESTINO}/app"
+PYTHON="${DESTINO}/venv/bin/python"
+
+if [[ -x "${PYTHON}" && -d "${APP}" ]]; then
+    cd "${APP}"
+    exec "${PYTHON}" -m openkan "$@"
+fi
+
+ORIGEM="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+if [[ -d "${ORIGEM}/openkan" ]]; then
+    cd "${ORIGEM}"
+    echo "[OpenKan] não instalado — executando direto do código-fonte…" >&2
+    exec python3 run.py "$@"
+fi
+
+echo "OpenKan não está instalado nesta máquina." >&2
+echo "Rode o instalador dentro da pasta do projeto:" >&2
+echo "    bash install.sh" >&2
+exit 1

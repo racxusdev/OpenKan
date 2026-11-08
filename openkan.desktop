@@ -1,0 +1,19 @@
+[Desktop Entry]
+Type=Application
+Version=2.0
+Name=OpenKan
+Name[pt]=OpenKan
+Name[pt_BR]=OpenKan
+GenericName=Camera
+GenericName[pt]=Câmera
+GenericName[pt_BR]=Câmera
+Comment=Capture photos and videos from your webcam with real-time effects
+Comment[pt]=Capture fotos e vídeos da sua webcam com efeitos em tempo real
+Comment[pt_BR]=Capture fotos e vídeos da sua webcam com efeitos em tempo real
+Exec=openkan
+TryExec=openkan
+Icon=openkan
+Terminal=false
+Categories=AudioVideo;Video;Recorder;
+Keywords=webcam;camera;câmera;foto;video;captura;record;gravar;openkan;
+StartupNotify=true

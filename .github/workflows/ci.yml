@@ -1,0 +1,29 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  compilacao:
+    name: Verificação de compilação
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Compila todos os módulos (sintaxe)
+        run: python -m compileall openkan run.py
+      - name: Conferência básica dos módulos
+        run: |
+          python - <<'EOF'
+          import sys
+          sys.path.insert(0, ".")
+          from openkan import VERSAO, AUTOR, LINK_KOFI, LINK_DISCORD
+          assert VERSAO, "versão vazia"
+          assert LINK_KOFI.startswith("https://"), "link Ko-Fi inválido"
+          assert LINK_DISCORD.startswith("https://"), "link Discord inválido"
+          print(f"OpenKan {VERSAO} — por {AUTOR} — metadados OK")
+          EOF

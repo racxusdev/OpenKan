@@ -1,139 +1,141 @@
 # OpenKan 🎥
 
-**Câmera com efeitos em tempo real para Ubuntu** — inspirado no [Webcamoid](https://webcamoid.github.io/), escrito em Python + PyQt6 + OpenCV.
+**Webcam app with real-time effects for Ubuntu** — inspired by [Webcamoid](https://webcamoid.github.io/), built with Python + PyQt6 + OpenCV.
 
-![Captura de tela do OpenKan](captura_de_tela.png)
+*(README em português: [README_PT.md](README_PT.md))*
 
-## Recursos
+![OpenKan screenshot](captura_de_tela_en.png)
 
-- **Preview em tempo real** com baixa latência (buffer sempre com o quadro mais recente)
-- **Troca de câmera** ao vivo: todas as fontes V4L2 detectadas aparecem na barra lateral — clique para trocar sem reiniciar
-- **12 efeitos em tempo real**: Original, Espelho, Preto e branco, Sépia, Negativo, Desfoque, Cartoon, Térmico, Pixelado, Vinheta, Neon e Scanlines
-- **Orientação**: rotação de 0°/90°/180°/270° e espelhamento horizontal/vertical
-- **Controles manuais da câmera** (lidos direto do driver V4L2 — cada webcam mostra o que tem):
-  - Obturador (exposição) com modo automático/manual
-  - ISO (ganho), Foco e Zoom
-  - **Abertura da lente (íris)** — quando o hardware expõe o controle
-  - Balanço de branco automático e temperatura (K)
-  - Brilho, contraste, saturação, matiz, nitidez, gama, anti-piscar (50/60 Hz) e mais
-  - Botão **Restaurar padrões** para voltar ao estado de fábrica
-- **Fotos** em PNG ou JPEG, com tamanho máximo opcional
-- **Vídeos** em **MP4, MKV, AVI ou WebM**, com resolução escolhível (nativa, 1080p, 720p, 480p, 360p)
-- **Gravação com áudio** — escolha a fonte (microfone, saída do sistema…) via PulseAudio/PipeWire
-- **Pastas escolhíveis** para fotos e vídeos (ícone de pasta na barra de ajustes), com menus "Abrir pasta das fotos / dos vídeos"
-- **Interface bilíngue** (português e inglês) trocável no menu **Idioma / Language**, em tempo de execução
-- **Notificações animadas** (toasts), flash na captura, borda pulsando durante a gravação
-- **Tema grafite com vermelho sangue**, widgets Fluent animados ([PyQt-Fluent-Widgets](https://qfluentwidgets.com))
-- Funciona em **Wayland e X11**
-- Preferências salvas (câmera, efeito, idioma, pastas, formatos…)
+## Features
 
-## Requisitos
+- **Real-time preview** with low latency (the buffer always keeps the newest frame)
+- **Live camera switching**: every detected V4L2 source shows up in the sidebar — click to switch without restarting
+- **12 real-time effects**: Original, Mirror, Black & white, Sepia, Negative, Blur, Cartoon, Thermal, Pixelate, Vignette, Neon and Scanlines
+- **Orientation**: 0°/90°/180°/270° rotation and horizontal/vertical flip
+- **Manual camera controls** (read straight from the V4L2 driver — each webcam shows what it actually has):
+  - Shutter (exposure) with auto/manual mode
+  - ISO (gain), Focus and Zoom
+  - **Lens aperture (iris)** — when the hardware exposes it
+  - Auto white balance and temperature (K)
+  - Brightness, contrast, saturation, hue, sharpness, gamma, anti-flicker (50/60 Hz) and more
+  - **Restore defaults** button
+- **Photos** as PNG or JPEG, with optional max size
+- **Videos** as **MP4, MKV, AVI or WebM**, with selectable resolution (native, 1080p, 720p, 480p, 360p)
+- **Video recording with audio** — pick the source (microphone, system output…) via PulseAudio/PipeWire
+- **Selectable folders** for photos and videos (folder icon in the settings bar), plus "Open photos/videos folder" menu items
+- **Bilingual UI** (English and Portuguese), switchable at runtime in the **Language / Idioma** menu
+- **Animated notifications** (toasts), capture flash, pulsing red border while recording
+- **Graphite dark theme with blood-red accents**, animated Fluent widgets ([PyQt-Fluent-Widgets](https://qfluentwidgets.com))
+- Works on **Wayland and X11**
+- Persistent preferences (camera, effect, language, folders, formats…)
 
-- Ubuntu 22.04 / 24.04 ou derivados (Debian também funciona)
+## Requirements
+
+- Ubuntu 22.04 / 24.04 or derivatives (Debian works too)
 - Python 3.9+
-- Uma webcam V4L2 (`/dev/video*`)
+- A V4L2 webcam (`/dev/video*`)
 
-O instalador cuida do resto: `python3-venv`, `libgl1`, `v4l-utils`, `ffmpeg` (áudio), `pulseaudio-utils`, PyQt6, PyQt-Fluent-Widgets, OpenCV e NumPy.
+The installer handles the rest: `python3-venv`, `libgl1`, `v4l-utils`, `ffmpeg` (audio), `pulseaudio-utils`, PyQt6, PyQt-Fluent-Widgets, OpenCV and NumPy.
 
-## Instalação
+## Install
 
 ```bash
 cd openkan
 bash install.sh
 ```
 
-Depois abra pelo menu de aplicativos (**OpenKan**) ou pelo terminal:
+Then launch from the applications menu (**OpenKan**) or from a terminal:
 
 ```bash
 openkan
 ```
 
-### Rodar direto do código-fonte (sem instalar)
+### Run from source (without installing)
 
 ```bash
-bash openkan-launcher        # usa o venv instalado, ou o sistema como fallback
-# ou
-python3 run.py               # precisa de PyQt6 + Fluent-Widgets + OpenCV no sistema
+bash openkan-launcher        # uses the installed venv, or falls back to system python
+# or
+python3 run.py               # needs PyQt6 + Fluent-Widgets + OpenCV system-wide
 ```
 
-## Como usar
+## Usage
 
-| O quê | Onde |
+| What | Where |
 | --- | --- |
-| Trocar de câmera | Barra lateral → **Fontes de vídeo** → clique na câmera |
-| Atualizar a lista | Botão **Atualizar** (icone ⟳) |
-| Efeito | Barra lateral → **Efeitos** |
-| Girar / espelhar | Barra lateral → **Orientação** |
-| Obturador, ISO, abertura, balanço de branco… | Painel direito → **Controles da câmera** |
-| Formato/tamanho da foto e pasta | Barra inferior → **FOTO** |
-| Formato/resolução do vídeo, áudio e pasta | Barra inferior → **VÍDEO** |
-| Gravar vídeo | Botão **Gravar vídeo** (a borda do preview pulsa em vermelho) |
-| Capturar foto | Botão vermelho **Capturar foto** (flash + notificação) |
-| Trocar idioma | Menu **Idioma / Language** → Português ou English |
+| Switch camera | Sidebar → **Video sources** → click the camera |
+| Refresh the list | **Refresh** button (⟳) |
+| Effects | Sidebar → **Effects** |
+| Rotate / flip | Sidebar → **Orientation** |
+| Shutter, ISO, aperture, white balance… | Right panel → **Camera controls** |
+| Photo format/size and folder | Bottom bar → **PHOTO** |
+| Video format/resolution, audio, folder | Bottom bar → **VIDEO** |
+| Record video | **Record video** button (preview border pulses red) |
+| Capture photo | Red **Capture photo** button (flash + notification) |
+| Switch language | **Language / Idioma** menu → English or Português |
 
-### Atalhos de teclado
+### Keyboard shortcuts
 
-| Atalho | Ação |
+| Shortcut | Action |
 | --- | --- |
-| `Ctrl+Shift+S` | Salvar foto como… |
-| `Ctrl+Q` | Sair |
-| `F1` | Sobre |
+| `Ctrl+Shift+S` | Save photo as… |
+| `Ctrl+Q` | Quit |
+| `F1` | About |
 
-## Controles manuais da câmera
+## Manual camera controls
 
-O painel **Controles da câmera** mostra exatamente o que **o seu driver** expõe (é a mesma lista do comando `v4l2-ctl --list-ctrls-menus`). Webcams simples podem não ter íris/zoom — nesse caso o controle simplesmente não aparece. Ao mover um controle manual, o modo automático correspondente (exposição, balanço de branco, foco) é desligado automaticamente, como nas câmeras profissionais.
+The **Camera controls** panel shows exactly what **your driver** exposes (the same list as `v4l2-ctl --list-ctrls-menus`). Basic webcams may not have iris/zoom — in that case the control simply doesn't appear. Moving a manual control automatically turns off the corresponding auto mode (exposure, white balance, focus), like a real camera.
 
-## Áudio na gravação
+## Recording audio
 
-A gravação usa `ffmpeg` para capturar a fonte escolhida (microfones e monitores de saída do PulseAudio/PipeWire) e misturar ao vídeo ao final (`-c:v copy`, sem recodificar). Se `ffmpeg` não estiver instalado, o vídeo sai sem áudio e nada mais é afetado.
+Recording uses `ffmpeg` to capture the chosen source (PulseAudio/PipeWire microphones and output monitors) and mux it into the video at the end (`-c:v copy`, no re-encoding). Without `ffmpeg`, videos are saved without audio and nothing else changes.
 
-## Solução de problemas
+## Troubleshooting
 
-- **Nenhuma câmera detectada** — confira com `v4l2-ctl --list-devices` (pacote `v4l-utils`). Clique em **Atualizar** depois de plugar a webcam.
-- **Câmera em uso por outro programa** — feche o app que está usando o dispositivo (navegador, Cheese…).
-- **Controles não aparecem** — instale `sudo apt install v4l-utils`.
-- **Sem áudio na gravação** — instale `sudo apt install ffmpeg pulseaudio-utils`.
-- **Aviso antigo "can't be used to capture by name"** — bug da versão anterior (UbuntuCam 1.x) já corrigido: o OpenKan abre as câmeras por índice numérico.
-- **Wayland** — nenhuma configuração extra é necessária; o Qt usa o backend Wayland nativo. Em ambientes raros, force `QT_QPA_PLATFORM=xcb openkan`.
+- **No camera detected** — check with `v4l2-ctl --list-devices` (`v4l-utils` package), then click **Refresh**.
+- **Camera busy** — close the app that is using it (browser, Cheese…).
+- **No controls in the panel** — install `sudo apt install v4l-utils`.
+- **No audio in recordings** — install `sudo apt install ffmpeg pulseaudio-utils`.
+- **Old "can't be used to capture by name" warning** — a bug in the previous version (UbuntuCam 1.x), already fixed: OpenKan opens cameras by numeric index.
+- **Wayland** — no extra setup needed; Qt uses the native Wayland backend. In rare environments, force `QT_QPA_PLATFORM=xcb openkan`.
 
-## Desinstalação
+## Uninstall
 
 ```bash
 bash uninstall.sh
-# remove também a instalação antiga do UbuntuCam, se existir:
+# also removes the old UbuntuCam install, if present:
 bash uninstall.sh --remover-ubuntucam-antigo
 ```
 
-Fotos e vídeos salvos são preservados.
+Saved photos and videos are preserved.
 
-## Estrutura do código
+## Code layout
 
 ```
 openkan/
 ├── openkan/
-│   ├── cameras.py        # detecção de câmeras (abre por ÍNDICE, não por nome)
-│   ├── captura.py        # threads de captura + orientação
-│   ├── controles_v4l2.py # controles manuais via v4l2-ctl
-│   ├── efeitos.py        # 12 filtros em tempo real
-│   ├── gravacao.py       # vídeo + áudio (ffmpeg) + mux
-│   ├── salvar_foto.py    # fotos (png/jpg) e pastas
-│   ├── traducao.py       # dicionário pt/en
-│   ├── janela.py         # interface (grafite + vermelho sangue, Fluent)
-│   └── main.py           # ponto de entrada
-├── openkan-launcher      # inicializador
-├── openkan.desktop       # atalho do menu
+│   ├── cameras.py        # camera detection (opens by INDEX, not by name)
+│   ├── captura.py        # capture threads + orientation
+│   ├── controles_v4l2.py # manual controls via v4l2-ctl
+│   ├── efeitos.py        # 12 real-time filters
+│   ├── gravacao.py       # video + audio (ffmpeg) + mux
+│   ├── salvar_foto.py    # photos (png/jpg) and folders
+│   ├── traducao.py       # pt/en dictionary
+│   ├── janela.py         # UI (graphite + blood red, Fluent widgets)
+│   └── main.py           # entry point
+├── openkan-launcher      # launcher
+├── openkan.desktop       # menu shortcut
 ├── install.sh / uninstall.sh
 └── requirements.txt
 ```
 
-## Licença
+## License
 
-Código deste projeto sob **MIT** (arquivo `LICENSE`).
+This project's code is under the **MIT** license (see `LICENSE`).
 
-A biblioteca de interface [PyQt-Fluent-Widgets](https://github.com/zhiyiYo/PyQt-Fluent-Widgets) é **GPL-3.0** — se você redistribuir o OpenKan completo (com ela), o conjunto deve obedecer a GPL-3.0. Para uso pessoal, estudo e modificação, fique à vontade.
+The UI library [PyQt-Fluent-Widgets](https://github.com/zhiyiYo/PyQt-Fluent-Widgets) is **GPL-3.0** — if you redistribute OpenKan as a whole (including it), the combined work must comply with GPL-3.0. For personal use, study and modification, you are free.
 
-Fotos e vídeos gravados são 100% seus. 🙂
+Photos and videos you record are 100% yours. 🙂
 
-## Autor
+## Author
 
 **Racxus Dev** — [github.com/racxusdev](https://github.com/racxusdev) · [ko-fi.com/racxus](https://ko-fi.com/racxus)

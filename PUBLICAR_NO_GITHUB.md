@@ -42,7 +42,7 @@ capturas de tela e verificação automática de compilação (`.github/workflows
 | Item | Onde | Estado |
 | --- | --- | --- |
 | Licença MIT (autoria Racxus Dev) | `LICENSE` | ✅ |
-| README bilíngue com badges | `README.md`, `README_EN.md` | ✅ |
+| README bilíngue com badges | `README.md` (inglês), `README_PT.md` (português) | ✅ |
 | Ignorar lixo de build/venv | `.gitignore` | ✅ |
 | CI (compilação automática) | `.github/workflows/ci.yml` | ✅ |
 | Captura de tela | `captura_de_tela.png`, `captura_de_tela_en.png` | ✅ |

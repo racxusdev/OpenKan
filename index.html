@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenKan - Webcam App para Ubuntu</title>
+    <meta name="description" content="Aplicativo de webcam com efeitos em tempo real para Ubuntu, inspirado no Webcamoid. Construído com Python + PyQt6 + OpenCV.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-main: #0a0a0a;
+            --bg-card: #151515;
+            --bg-nav: rgba(10, 10, 10, 0.85);
+            --text-main: #f0f0f0;
+            --text-muted: #a0a0a0;
+            --red-primary: #e60000;
+            --red-glow: rgba(230, 0, 0, 0.4);
+            --red-dark: #800000;
+            --gradient-red: linear-gradient(135deg, #ff1a1a 0%, #990000 100%);
+            --border-color: #2a2a2a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Navbar */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 5%;
+            background: var(--bg-nav);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--text-main);
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo-dot {
+            width: 12px;
+            height: 12px;
+            background-color: var(--red-primary);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--red-primary);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--red-primary);
+        }
+
+        /* Hero Section */
+        .hero {
+            position: relative;
+            padding: 6rem 5% 8rem 5%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 4rem;
+            background: radial-gradient(circle at 100% 0%, rgba(230,0,0,0.1) 0%, transparent 40%),
+                        radial-gradient(circle at 0% 100%, rgba(230,0,0,0.05) 0%, transparent 40%);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .hero-content {
+            flex: 1;
+            max-width: 600px;
+        }
+
+        .hero-content h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(to right, #ffffff, #a0a0a0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-content h1 span {
+            background: var(--gradient-red);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-content p {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            margin-bottom: 2.5rem;
+        }
+
+        .download-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+        }
+
+        .btn-primary {
+            background: var(--gradient-red);
+            color: white;
+            box-shadow: 0 4px 15px var(--red-glow);
+            border: 1px solid #ff3333;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(230, 0, 0, 0.6);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: #1a1a1a;
+            border-color: var(--red-primary);
+            color: var(--red-primary);
+        }
+
+        /* Hero Image Container (Atualizado com imagem real) */
+        .hero-image-container {
+            flex: 1.2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .hero-img {
+            width: 100%;
+            height: auto;
+            max-height: 600px;
+            object-fit: contain;
+            border-radius: 12px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8), 0 0 0 1px var(--border-color);
+            transition: transform 0.3s ease;
+            background: #000;
+        }
+
+        .hero-img:hover {
+            transform: scale(1.02);
+        }
+
+        /* Pulse Animation for Recording (Sobreposto à imagem) */
+        .recording-pulse {
+            position: absolute;
+            bottom: 25px;
+            right: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(10, 10, 10, 0.85);
+            backdrop-filter: blur(5px);
+            padding: 8px 16px;
+            border-radius: 50px;
+            border: 1px solid var(--red-primary);
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--red-primary);
+            box-shadow: 0 0 15px var(--red-glow);
+            animation: pulse 2s infinite;
+            z-index: 10;
+        }
+
+        .recording-pulse::before {
+            content: '';
+            width: 10px;
+            height: 10px;
+            background-color: var(--red-primary);
+            border-radius: 50%;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 10px var(--red-glow); }
+            50% { box-shadow: 0 0 25px rgba(230, 0, 0, 0.8); }
+            100% { box-shadow: 0 0 10px var(--red-glow); }
+        }
+
+        /* Features Section */
+        .features {
+            padding: 6rem 5%;
+            background: var(--bg-main);
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 3.5rem;
+            color: var(--text-main);
+        }
+
+        .section-title span {
+            color: var(--red-primary);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: var(--bg-card);
+            padding: 2.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--gradient-red);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border-color: #333;
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        .card-icon {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            background: #1a1a1a;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        .card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: var(--text-main);
+        }
+
+        .card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* Install Section */
+        .install-section {
+            padding: 6rem 5%;
+            background: #0d0d0d;
+            text-align: center;
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .code-block {
+            background: #000000;
+            color: #d4d4d4;
+            padding: 1.5rem 2rem;
+            border-radius: 12px;
+            font-family: 'JetBrains Mono', monospace;
+            text-align: left;
+            max-width: 800px;
+            margin: 2.5rem auto;
+            border: 1px solid var(--border-color);
+            position: relative;
+        }
+
+        .code-header {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .code-header span {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #333;
+        }
+
+        .code-block code {
+            font-family: inherit;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .code-block .comment { color: #6a9955; }
+        .code-block .command { color: var(--red-primary); }
+
+        /* Footer */
+        footer {
+            background: #050505;
+            color: var(--text-muted);
+            padding: 4rem 5% 2rem 5%;
+            text-align: center;
+        }
+
+        .footer-content {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: var(--red-primary);
+        }
+
+        .support-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--gradient-red);
+            color: white;
+            padding: 0.8rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 1rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 15px var(--red-glow);
+        }
+
+        .support-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(230, 0, 0, 0.6);
+        }
+
+        .footer-bottom {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-color);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 968px) {
+            .hero {
+                flex-direction: column;
+                text-align: center;
+                padding: 4rem 5%;
+            }
+
+            .hero-content h1 {
+                font-size: 2.8rem;
+            }
+
+            .download-buttons {
+                justify-content: center;
+            }
+
+            .hero-image-container {
+                margin-top: 2rem;
+                width: 100%;
+            }
+
+            .recording-pulse {
+                bottom: 15px;
+                right: 15px;
+            }
+
+            .nav-links {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav>
+        <div class="logo">
+            <div class="logo-dot"></div>
+            OpenKan
+        </div>
+        <div class="nav-links">
+            <a href="#features">Recursos</a>
+            <a href="#install">Instalação</a>
+            <a href="https://github.com/racxusdev/OpenKan" target="_blank">GitHub</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero">
+        <div class="hero-content">
+            <h1>Sua webcam no Ubuntu com <span>superpoderes.</span></h1>
+            <p>Aplicativo com efeitos em tempo real, controle manual de hardware e gravação de vídeo com áudio. Inspirado no Webcamoid, construído com Python + PyQt6 + OpenCV.</p>
+            
+            <div class="download-buttons">
+                <a href="https://github.com/racxusdev/OpenKan" class="btn btn-primary">
+                    ⬇ Ver no GitHub
+                </a>
+                <a href="#install" class="btn btn-secondary">
+                    Como Instalar
+                </a>
+            </div>
+        </div>
+
+        <div class="hero-image-container">
+            <!-- Imagem Real do OpenKan -->
+            <img src="https://github.com/racxusdev/OpenKan/blob/main/captura_de_tela_en.png?raw=true" alt="Interface do OpenKan mostrando efeitos e controles da webcam" class="hero-img">
+            
+            <!-- Selo de Gravação sobreposto -->
+            <div class="recording-pulse">
+                REC
+            </div>
+        </div>
+    </header>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <h2 class="section-title">Poderoso, <span>Dark e Rápido.</span></h2>
+        <div class="grid">
+            <div class="card">
+                <div class="card-icon">🎥</div>
+                <h3>12 Efeitos em Tempo Real</h3>
+                <p>Original, Espelhado, Preto e Branco, Sépia, Negativo, Desfoque, Cartoon, Térmico, Pixelado, Vinheta, Neon e Scanlines. Com baixa latência.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">🎛️</div>
+                <h3>Controle Total da Câmera</h3>
+                <p>Acesso direto ao driver V4L2. Ajuste obturador, ISO, foco, zoom, abertura (íris), balanço de branco e muito mais diretamente pela interface.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">📹</div>
+                <h3>Gravação com Áudio</h3>
+                <p>Grave vídeos em MP4, MKV, AVI ou WebM. Escolha a resolução e capture o áudio do microfone ou do sistema via PulseAudio/PipeWire (via ffmpeg).</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">🖼️</div>
+                <h3>Fotos e Vídeos</h3>
+                <p>Salve fotos em PNG ou JPEG com tamanho máximo opcional. Escolha as pastas de destino diretamente pela interface do aplicativo.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">🔄</div>
+                <h3>Múltiplas Câmeras</h3>
+                <p>Troque de câmera (fontes V4L2) ao vivo, sem precisar reiniciar o aplicativo. Suporte a rotação (0° a 270°) e flip horizontal/vertical.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">🌍</div>
+                <h3>Bilíngue e Persistente</h3>
+                <p>Interface animada em Inglês e Português (mude em tempo real). Funciona nativamente no Wayland e X11, e salva suas preferências automaticamente.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Install Section -->
+    <section class="install-section" id="install">
+        <h2 class="section-title">Pronto para <span>gravar?</span></h2>
+        <p style="color: var(--text-muted); max-width: 600px; margin: 0 auto;">O instalador cuida de tudo (ffmpeg, v4l-utils, PyQt6, dependências). Basta clonar o repositório e rodar o script.</p>
+        
+        <div class="code-block">
+            <div class="code-header">
+                <span></span><span></span><span></span>
+            </div>
+            <code><span class="comment"># Entre na pasta do projeto</span></code>
+            <code><span class="command">cd</span> openkan</code>
+            <code><span class="comment"># Execute o instalador</span></code>
+            <code><span class="command">bash</span> install.sh</code>
+            <br>
+            <code><span class="comment"># Após instalar, abra pelo terminal:</span></code>
+            <code><span class="command">openkan</span></code>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="logo" style="justify-content: center; font-size: 1.8rem; margin-bottom: 1rem;">
+                <div class="logo-dot"></div>
+                OpenKan
+            </div>
+            <p>Webcam app com efeitos em tempo real para Ubuntu.</p>
+            
+            <div class="footer-links">
+                <a href="https://github.com/racxusdev/OpenKan" target="_blank">GitHub do Projeto</a>
+                <a href="https://github.com/racxusdev" target="_blank">Autor (Racxus Dev)</a>
+                <a href="https://racxusdev.blogspot.com/p/racxus-minecraft-developer.html" target="_blank">Outros Projetos</a>
+            </div>
+
+            <div>
+                <p style="margin-bottom: 1rem; color: #cbd5e1;">Gostou do OpenKan? Ajude a manter o projeto vivo!</p>
+                <a href="https://ko-fi.com/racxus" target="_blank" class="support-btn">
+                    ☕ Apoiar no Ko-fi
+                </a>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2024 Racxus Dev. Licença MIT (Código original).</p>
+            <p style="font-size: 0.8rem; margin-top: 0.5rem;">PyQt-Fluent-Widgets é GPL-3.0. Fotos e vídeos são 100% seus.</p>
+        </div>
+    </footer>
+
+</body>
+</html>
